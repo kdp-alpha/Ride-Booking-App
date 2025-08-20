@@ -1,22 +1,19 @@
 package com.karan.project.ride.ridebookingApp.services.impl;
 
-import com.karan.project.ride.ridebookingApp.dto.RideDto;
 import com.karan.project.ride.ridebookingApp.dto.RideRequestDto;
-import com.karan.project.ride.ridebookingApp.dto.RiderDto;
 import com.karan.project.ride.ridebookingApp.entities.*;
 import com.karan.project.ride.ridebookingApp.entities.enums.RideRequestStatus;
 import com.karan.project.ride.ridebookingApp.entities.enums.RideStatus;
+import com.karan.project.ride.ridebookingApp.exceptions.ResourceNotFoundException;
 import com.karan.project.ride.ridebookingApp.repositories.RideRepository;
 import com.karan.project.ride.ridebookingApp.services.RideRequestService;
 import com.karan.project.ride.ridebookingApp.services.RideService;
-import com.karan.project.ride.ridebookingApp.services.RiderService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Random;
 
 @Service
@@ -28,13 +25,12 @@ public class RideServiceImpl implements RideService {
 
     @Override
     public Ride getRideById(Long rideId) {
-         return null;
+
+        return rideRepository.findById(rideId).orElseThrow(() ->
+              new ResourceNotFoundException("Ride not found with id: " + rideId)
+        );
     }
 
-    @Override
-    public void matchWithDriver(RideRequestDto rideRequestDto) {
-
-    }
 
     @Override
     public Ride createNewRide(RideRequest rideRequest, Driver driver) {
@@ -48,12 +44,13 @@ public class RideServiceImpl implements RideService {
 
         rideRequestService.update(rideRequest);
 
-        return null;
+        return rideRepository.save(ride);
     }
 
     @Override
-    public Ride updateRideStatus(Long rideId, RideStatus rideStatus) {
-        return null;
+    public Ride updateRideStatus(Ride ride, RideStatus rideStatus) {
+        ride.setRideStatus(rideStatus);
+        return rideRepository.save(ride);
     }
 
     @Override

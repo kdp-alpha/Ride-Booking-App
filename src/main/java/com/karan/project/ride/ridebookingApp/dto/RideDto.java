@@ -19,11 +19,11 @@ public class RideDto {
     private PointDto pickupLocation;
     private PointDto dropOffLocation;
     private LocalDateTime createdTime;
-    private RiderDto ride;
+    private RiderDto rider;
     private DriverDto driver;
     private PaymentMethod paymentMethod;
     private RideStatus rideStatus;
-
+    private String otp;
     private Double fare;
     private LocalDateTime startTime;
     private LocalDateTime endedAt;

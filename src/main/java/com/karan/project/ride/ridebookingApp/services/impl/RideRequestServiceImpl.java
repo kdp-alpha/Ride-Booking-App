@@ -25,4 +25,9 @@ public class RideRequestServiceImpl implements RideRequestService {
 
         rideRequestRepo.save(rideRequest);
     }
+
+    @Override
+    public RideRequest save(RideRequest rideRequest) {
+        return rideRequestRepo.save(rideRequest);
+    }
 }

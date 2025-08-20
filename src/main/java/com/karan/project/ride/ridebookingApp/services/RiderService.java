@@ -6,6 +6,8 @@ import com.karan.project.ride.ridebookingApp.dto.RideRequestDto;
 import com.karan.project.ride.ridebookingApp.dto.RiderDto;
 import com.karan.project.ride.ridebookingApp.entities.Rider;
 import com.karan.project.ride.ridebookingApp.entities.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,7 +23,7 @@ public interface RiderService {
 
     RiderDto getMyProfile();
 
-    List<RideDto> getMyRides();
+    Page<RideDto> getMyRides(PageRequest pageRequest);
 
     Rider createNewRider(User user);
 

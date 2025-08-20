@@ -19,7 +19,7 @@ public class RideRequestDto {
     private PointDto pickupLocation;
     private PointDto dropOffLocation;
     private LocalDateTime requestedTime;
-    private RiderDto ride;
+    private RiderDto rider;
     private PaymentMethod paymentMethod;
     private RideRequestStatus rideRequestStatus;
 
