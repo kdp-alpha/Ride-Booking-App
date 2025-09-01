@@ -10,6 +10,7 @@ import com.karan.project.ride.ridebookingApp.exceptions.RuntimeConflictException
 import com.karan.project.ride.ridebookingApp.repositories.UserRepository;
 import com.karan.project.ride.ridebookingApp.services.AuthService;
 import com.karan.project.ride.ridebookingApp.services.RiderService;
+import com.karan.project.ride.ridebookingApp.services.WalletService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class AuthServiceImpl implements AuthService {
     private final ModelMapper modelMapper;
     private final UserRepository userRepository;
     private  final RiderService riderService;
+    private final WalletService walletService;
     @Override
     public void login(String email, String password) {
 
@@ -41,6 +43,7 @@ public class AuthServiceImpl implements AuthService {
 
         //while signup every user will be rider so we have to create a rider
          riderService.createNewRider(savedUser);
+         walletService.createNewWallet(savedUser);
 
         return modelMapper.map(savedUser, UserDto.class);
     }

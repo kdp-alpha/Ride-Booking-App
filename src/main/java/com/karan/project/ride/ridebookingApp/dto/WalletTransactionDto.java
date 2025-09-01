@@ -1,35 +1,30 @@
-package com.karan.project.ride.ridebookingApp.entities;
+package com.karan.project.ride.ridebookingApp.dto;
 
+import com.karan.project.ride.ridebookingApp.entities.Ride;
+import com.karan.project.ride.ridebookingApp.entities.Wallet;
 import com.karan.project.ride.ridebookingApp.entities.enums.TransactionMethods;
 import com.karan.project.ride.ridebookingApp.entities.enums.TransactionType;
-import jakarta.persistence.*;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
-@Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class WalletTransaction {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class WalletTransactionDto {
     private Long id;
-
     private Double amount;
-
     private TransactionType transactionType;
-
     private TransactionMethods transactionMethods;
-
-    @OneToOne
     private Ride ride;
-
     private String transactionId;
-
-    @ManyToOne
-    private Wallet wallet;
-
-    @CreationTimestamp
+    private WalletDto wallet;
     private LocalDateTime timestamp;
 }
