@@ -3,9 +3,7 @@ package com.karan.project.ride.ridebookingApp.entities;
 import com.karan.project.ride.ridebookingApp.entities.enums.PaymentMethod;
 import com.karan.project.ride.ridebookingApp.entities.enums.PaymentStatus;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -14,6 +12,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

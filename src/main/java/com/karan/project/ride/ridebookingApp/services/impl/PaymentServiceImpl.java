@@ -30,7 +30,7 @@ public class PaymentServiceImpl implements PaymentService {
                  .amount(ride.getFare())
                  .paymentStatus(PaymentStatus.PENDING)
                  .build();
-         return  paymentRepository.save(payment);
+         return paymentRepository.save(payment);
     }
 
     @Override

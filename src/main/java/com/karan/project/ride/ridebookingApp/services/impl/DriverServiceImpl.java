@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class DriverServiceImpl implements DriverService {
@@ -94,29 +94,36 @@ public class DriverServiceImpl implements DriverService {
 
         Ride savedRide = rideService.updateRideStatus(ride,RideStatus.ONGOING);
 
+        // create payment associated with this ride
+        paymentService.createNewPayment(savedRide);
+
         return modelMapper.map(savedRide,RideDto.class);
     }
 
     @Override
+    @Transactional
     public RideDto endRide(Long rideId) {
         Ride ride = rideService.getRideById(rideId);
-        Driver driver = getCurrentDriver();
+        Driver currentDriver = getCurrentDriver();
 
-        if(!driver.equals(ride.getDriver())){
-            throw new RuntimeException("Driver cannot start a ride as he has not accepted it earlier");
+        if(!currentDriver.equals(ride.getDriver())){
+            throw new RuntimeException("Driver cannot start a ride as he has not accepted the ride earlier");
         }
 
         if(!ride.getRideStatus().equals(RideStatus.ONGOING)){
-            throw new RuntimeException("Ride Status is not confirmed "+ ride.getRideStatus());
+            throw new RuntimeException("Ride status is not ongoing hence it can not get ended, status: " + ride.getRideStatus());
         }
+        // update ride status as ENDED
         ride.setEndedAt(LocalDateTime.now());
-        Ride savedRide = rideService.updateRideStatus(ride,RideStatus.ENDED);
-        updateDriverAvailability(driver.getId(),true);
+        Ride savedRide = rideService.updateRideStatus(ride, RideStatus.ENDED);
 
+        // update drivers status as available
+        updateDriverAvailability(currentDriver, true);
+
+        // process payment
         paymentService.processPayment(ride);
 
-        return modelMapper.map(savedRide,RideDto.class);
-
+        return modelMapper.map(savedRide, RideDto.class);
     }
 
     @Override
@@ -146,13 +153,9 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public void updateDriverAvailability(Long driverId, boolean availability) {
-        Driver driver = driverRepository.findById(driverId).orElseThrow(() ->
-         new ResourceNotFoundException("Driver not found with id: "+ driverId)
-        );
-
+    public Driver updateDriverAvailability(Driver driver, boolean availability) {
         driver.setAvailable(availability);
-        driverRepository.save(driver);
+        return driverRepository.save(driver);
 
     }
 }

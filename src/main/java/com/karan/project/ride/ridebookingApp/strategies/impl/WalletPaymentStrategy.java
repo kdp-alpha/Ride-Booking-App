@@ -5,6 +5,7 @@ import com.karan.project.ride.ridebookingApp.entities.Payment;
 import com.karan.project.ride.ridebookingApp.entities.Rider;
 import com.karan.project.ride.ridebookingApp.entities.enums.PaymentStatus;
 import com.karan.project.ride.ridebookingApp.entities.enums.TransactionMethods;
+import com.karan.project.ride.ridebookingApp.repositories.PaymentRepository;
 import com.karan.project.ride.ridebookingApp.services.PaymentService;
 import com.karan.project.ride.ridebookingApp.services.WalletService;
 import com.karan.project.ride.ridebookingApp.strategies.PaymentMethodStrategy;
@@ -20,12 +21,15 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class WalletPaymentStrategy implements PaymentMethodStrategy {
     private final WalletService walletService;
-    private final PaymentService paymentService;
+    private final PaymentRepository paymentRepository;
 
     @Override
     public void processPayment(Payment payment) {
-        Driver driver = payment.getRide().getDriver();
+        // get rider
         Rider rider = payment.getRide().getRider();
+
+        // get driver
+        Driver driver = payment.getRide().getDriver();
 
         walletService.deductMoneyFromWallet(rider.getUser(),
                 payment.getAmount(),null,payment.getRide(), TransactionMethods.RIDE);
@@ -34,6 +38,7 @@ public class WalletPaymentStrategy implements PaymentMethodStrategy {
 
         walletService.addMoneyToWallet(driver.getUser(),driverCut,null,payment.getRide(),TransactionMethods.RIDE);
 
-        paymentService.updatePaymentStatus(payment, PaymentStatus.CONFIRMED);
+        payment.setPaymentStatus(PaymentStatus.CONFIRMED);
+        paymentRepository.save(payment);
     }
 }

@@ -68,7 +68,7 @@ public class RiderServiceImpl implements RiderService {
         }
 
         Ride savedRide = rideService.updateRideStatus(ride,RideStatus.CANCELLED);
-        driverService.updateDriverAvailability(ride.getDriver().getId(),true);
+        driverService.updateDriverAvailability(ride.getDriver(),true);
 
         return modelMapper.map(savedRide,RideDto.class);
     }

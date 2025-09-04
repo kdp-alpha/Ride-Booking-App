@@ -28,5 +28,5 @@ public interface DriverService {
 
     Driver getCurrentDriver();
 
-    void updateDriverAvailability(Long driverId,boolean availability);
+    Driver updateDriverAvailability(Driver driver,boolean availability);
 }
