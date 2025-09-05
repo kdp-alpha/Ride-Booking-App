@@ -1,5 +1,6 @@
 package com.karan.project.ride.ridebookingApp.services.impl;
 
+import com.karan.project.ride.ridebookingApp.dto.DriverDto;
 import com.karan.project.ride.ridebookingApp.dto.RideDto;
 import com.karan.project.ride.ridebookingApp.dto.RideRequestDto;
 import com.karan.project.ride.ridebookingApp.dto.RiderDto;
@@ -74,7 +75,7 @@ public class RiderServiceImpl implements RiderService {
     }
 
     @Override
-    public RiderDto rateDriver(Long rideId, Integer rating) {
+    public DriverDto rateDriver(Long rideId, Integer rating) {
         return null;
     }
 

@@ -3,12 +3,15 @@ package com.karan.project.ride.ridebookingApp.services.impl;
 import com.karan.project.ride.ridebookingApp.dto.DriverDto;
 import com.karan.project.ride.ridebookingApp.dto.SignupDto;
 import com.karan.project.ride.ridebookingApp.dto.UserDto;
+import com.karan.project.ride.ridebookingApp.entities.Driver;
 import com.karan.project.ride.ridebookingApp.entities.Rider;
 import com.karan.project.ride.ridebookingApp.entities.User;
 import com.karan.project.ride.ridebookingApp.entities.enums.Role;
+import com.karan.project.ride.ridebookingApp.exceptions.ResourceNotFoundException;
 import com.karan.project.ride.ridebookingApp.exceptions.RuntimeConflictException;
 import com.karan.project.ride.ridebookingApp.repositories.UserRepository;
 import com.karan.project.ride.ridebookingApp.services.AuthService;
+import com.karan.project.ride.ridebookingApp.services.DriverService;
 import com.karan.project.ride.ridebookingApp.services.RiderService;
 import com.karan.project.ride.ridebookingApp.services.WalletService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +28,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private  final RiderService riderService;
     private final WalletService walletService;
+    private final DriverService driverService;
     @Override
     public void login(String email, String password) {
 
@@ -49,7 +53,24 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public DriverDto onboardingNewDriver(Long userId) {
-        return null;
+    public DriverDto onboardingNewDriver(Long userId,String vehicleId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with id" + userId));
+        if(user.getRoles().contains(Role.DRIVER)){
+            throw new RuntimeConflictException("User with id" + userId + "is already a driver");
+        }
+
+        Driver driver = Driver.builder()
+                .user(user)
+                .ratings(0.0)
+                .vehicleId(vehicleId)
+                .available(true)
+                .build();
+
+        user.getRoles().add(Role.DRIVER);
+
+        Driver savedDriver = driverService.createNewDriver(driver);
+
+        return modelMapper.map(savedDriver,DriverDto.class);
+
     }
 }
